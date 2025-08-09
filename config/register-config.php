@@ -5,6 +5,6 @@ return [
         'mobile_verification' => '',
         'document_verification' => '',
         'email_verification' => '',
-        'allow_deliveryman' => '',
+        'allow_deliveryman' => '1',
     ],
 ];
