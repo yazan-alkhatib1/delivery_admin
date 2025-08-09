@@ -25,10 +25,18 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('orders',function(Blueprint $table){
-            $table->unsignedBigInteger('is_reschedule');
-            $table->foreign('is_reschedule')->references('id')->on('reschedules')->onDelete('cascade');
-        });
+        if (!Schema::hasTable('orders')) {
+            Schema::create('orders',function(Blueprint $table){
+                $table->id();
+                $table->unsignedBigInteger('is_reschedule')->nullable();
+                $table->foreign('is_reschedule')->references('id')->on('reschedules')->onDelete('cascade');
+            });
+        } else if (!Schema::hasColumn('orders', 'is_reschedule')) {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->unsignedBigInteger('is_reschedule')->nullable();
+                $table->foreign('is_reschedule')->references('id')->on('reschedules')->onDelete('cascade');
+            });
+        }
     }
 
     /**
@@ -37,5 +45,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('ratings');
+        // We don't drop orders table here as it might have been pre-existing
     }
 };
