@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
              UserTableSeeder::class,
              ModelHasRolesTableSeeder::class,
              PermissionTableSeeder::class,
-             RoleHasPermissionsTableSeeder::class,
+//             RoleHasPermissionsTableSeeder::class,
              ModelHasPermissionsTableSeeder::class,
              AppSettingTableSeeder::class,
              MailSeeders::class,
