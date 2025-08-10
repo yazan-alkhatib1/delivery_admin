@@ -20,9 +20,11 @@ class ScreenkeywordSeeder extends Seeder
   {
     $languageListIds = LanguageList::pluck('id')->toArray();
 
-    $fetchedKeywords = LanguageWithKeyword::whereIn('language_id', $languageListIds)
-        ->pluck('keyword_id')
-        ->toArray();
+    if (empty($languageListIds)) {
+        echo "No languages found in LanguageList table. Make sure LanguageDefaultListSeeder runs first.\n";
+        return;
+    }
+
 
         $screen_data =
         [
@@ -3473,13 +3475,13 @@ class ScreenkeywordSeeder extends Seeder
                 "keyword_id"=> 631,
                 "keyword_name"=> "writeYourReview",
                 "keyword_value"=> "write your review"
-        
+
               ],     [
                 "screenId"=> "52",
                 "keyword_id"=> 632,
                 "keyword_name"=> "unknownDeliveryman",
                 "keyword_value"=> "Unknown Deliveryman"
-        
+
               ]
             ]
           ],
@@ -4206,7 +4208,7 @@ class ScreenkeywordSeeder extends Seeder
                 "keyword_name"=> "paytrHistory",
                 "keyword_value"=> "Paytr History"
               ]
-        
+
             ]
           ],
           [
@@ -4225,7 +4227,7 @@ class ScreenkeywordSeeder extends Seeder
             "keyword_name"=> "addSOSContacts",
             "keyword_value"=> "Add SOS Contacts"
           ]
-        
+
             ]
           ],
           [
@@ -4314,18 +4316,17 @@ class ScreenkeywordSeeder extends Seeder
               'keyword_value' => $keyword_data['keyword_value']
             ]);
           }
-          if (!in_array($keyword_data['keyword_id'], $fetchedKeywords)) {
-            $unmatchedKeywords[] = $keyword_data;
+          // Create language keyword entries for all languages
+          $unmatchedKeywords[] = $keyword_data;
 
-            foreach ($languageListIds as $languageId) {
-                LanguageWithKeyword::create([
-                    'screen_id'      => $keyword_data['screenId'],
-                    'keyword_id'     => $keyword_data['keyword_id'],
-                    'keyword_value'  => $keyword_data['keyword_value'],
-                    'language_id'    => $languageId,
-                ]);
-            }
-         }
+          foreach ($languageListIds as $languageId) {
+              LanguageWithKeyword::create([
+                  'screen_id'      => $keyword_data['screenId'],
+                  'keyword_id'     => $keyword_data['keyword_id'],
+                  'keyword_value'  => $keyword_data['keyword_value'],
+                  'language_id'    => $languageId,
+              ]);
+          }
         }
       }
     }

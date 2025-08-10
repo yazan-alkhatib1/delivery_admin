@@ -19,13 +19,13 @@ class DatabaseSeeder extends Seeder
              UserTableSeeder::class,
              ModelHasRolesTableSeeder::class,
              PermissionTableSeeder::class,
-//             RoleHasPermissionsTableSeeder::class,
+             RoleHasPermissionsTableSeeder::class,
              ModelHasPermissionsTableSeeder::class,
-            AppSettingTableSeeder::class,
+             AppSettingTableSeeder::class,
              MailSeeders::class,
              SmsSeeders::class,
-             ScreenkeywordSeeder::class,
-             LanguageDefaultListSeeder::class
+             LanguageDefaultListSeeder::class,
+             ScreenkeywordSeeder::class
         ]);
     }
 }
