@@ -13,20 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-
         $this->call([
-             RoleTableSeeder::class,
-             UserTableSeeder::class,
-             ModelHasRolesTableSeeder::class,
-             PermissionTableSeeder::class,
+            RoleTableSeeder::class,
+            UserTableSeeder::class,
+            ModelHasRolesTableSeeder::class,
+            PermissionTableSeeder::class,
 //             RoleHasPermissionsTableSeeder::class,
-             ModelHasPermissionsTableSeeder::class,
-             AppSettingTableSeeder::class,
-             MailSeeders::class,
-             SmsSeeders::class,
-             LanguageDefaultListSeeder::class,
-             LanguageListSeeder::class,
-             ScreenkeywordSeeder::class
+            ModelHasPermissionsTableSeeder::class,
+            AppSettingTableSeeder::class,
+            MailSeeders::class,
+            SmsSeeders::class,
+            LanguageDefaultListSeeder::class,
+            ScreenkeywordSeeder::class
         ]);
     }
 }
