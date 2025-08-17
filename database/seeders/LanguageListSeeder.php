@@ -6,6 +6,8 @@ use Illuminate\Database\Seeder;
 use App\Models\LanguageList;
 use App\Models\LanguageDefaultList;
 use App\Models\LanguageVersionDetail;
+use App\Models\DefaultKeyword;
+use App\Models\LanguageWithKeyword;
 
 class LanguageListSeeder extends Seeder
 {
@@ -72,5 +74,64 @@ class LanguageListSeeder extends Seeder
         }
 
         echo "Seeded English language in LanguageList with ID: {$language->id}\n";
+
+        // Add Arabic language as active (RTL)
+        $defaultArabic = LanguageDefaultList::where('languageCode', 'ar')
+            ->where('countryCode', 'ar-SA')
+            ->first();
+        if (!$defaultArabic) {
+            $defaultArabic = LanguageDefaultList::where('languageCode', 'ar')->first();
+        }
+
+        if ($defaultArabic) {
+            $arabic = LanguageList::firstOrCreate(
+                [
+                    'language_id'   => $defaultArabic->id,
+                    'language_code' => 'ar',
+                ],
+                [
+                    'language_name' => 'Arabic',
+                    'country_code'  => $defaultArabic->countryCode ?? 'ar-SA',
+                    'language_flag' => null,
+                    'is_rtl'        => 1,
+                    'status'        => 1,
+                    'is_default'    => 0,
+                ]
+            );
+
+            // Ensure Arabic is active and RTL
+            $changed = false;
+            if ($arabic->status != 1) { $arabic->status = 1; $changed = true; }
+            if ($arabic->is_rtl != 1) { $arabic->is_rtl = 1; $changed = true; }
+            if ($changed) { $arabic->save(); }
+
+            echo "Seeded Arabic language in LanguageList with ID: {$arabic->id}\n";
+
+            // Backfill keywords for Arabic only (avoids duplicating other languages)
+            $existingCount = LanguageWithKeyword::where('language_id', $arabic->id)->count();
+            if ($existingCount == 0) {
+                $defaultKeywords = DefaultKeyword::all(['screen_id','keyword_id','keyword_value']);
+                foreach ($defaultKeywords as $dk) {
+                    // Only create if not exists (safety if partially seeded)
+                    $exists = LanguageWithKeyword::where([
+                        'language_id' => $arabic->id,
+                        'keyword_id'  => $dk->keyword_id,
+                    ])->exists();
+                    if (!$exists) {
+                        LanguageWithKeyword::create([
+                            'screen_id'     => $dk->screen_id,
+                            'keyword_id'    => $dk->keyword_id,
+                            'keyword_value' => $dk->keyword_value, // placeholder until real Arabic translations are provided
+                            'language_id'   => $arabic->id,
+                        ]);
+                    }
+                }
+                echo "Backfilled " . count($defaultKeywords) . " language keywords for Arabic.\n";
+            } else {
+                echo "Arabic language keywords already exist (count: {$existingCount}). Skipping backfill.\n";
+            }
+        } else {
+            echo "LanguageDefaultList has no Arabic entry. Please ensure LanguageDefaultListSeeder ran successfully.\n";
+        }
     }
 }
