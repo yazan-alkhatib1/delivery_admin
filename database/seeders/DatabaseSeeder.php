@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             MailSeeders::class,
             SmsSeeders::class,
             LanguageDefaultListSeeder::class,
+            LanguageListSeeder::class,
             ScreenkeywordSeeder::class
         ]);
     }
